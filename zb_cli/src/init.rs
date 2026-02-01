@@ -28,6 +28,14 @@ pub fn is_writable(path: &Path) -> bool {
 }
 
 pub fn run_init(root: &Path, prefix: &Path) -> Result<(), InitError> {
+    run_init_impl(root, prefix, false)
+}
+
+pub fn run_init_with_shell_setup(root: &Path, prefix: &Path) -> Result<(), InitError> {
+    run_init_impl(root, prefix, true)
+}
+
+fn run_init_impl(root: &Path, prefix: &Path, update_shell_profile: bool) -> Result<(), InitError> {
     println!("{} Initializing zerobrew...", style("==>").cyan().bold());
 
     let dirs_to_create: Vec<PathBuf> = vec![
@@ -109,7 +117,9 @@ pub fn run_init(root: &Path, prefix: &Path) -> Result<(), InitError> {
         }
     }
 
-    add_to_path(prefix)?;
+    if update_shell_profile {
+        add_to_path(prefix)?;
+    }
 
     println!("{} Initialization complete!", style("==>").cyan().bold());
 
